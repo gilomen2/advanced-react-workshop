@@ -1,9 +1,28 @@
-import "./index.css";
-import React, { Component } from "react";
-import subscribeToMessages from "./messages";
-import FadeIn from "./FadeIn";
+import './index.css';
+import React, { Component } from 'react';
+import subscribeToMessages from './messages';
+import FadeIn from './FadeIn';
 
 class PinScrollToBottom extends Component {
+  scrollToBottom() {
+    document.documentElement.scrollTop = document.documentElement.scrollHeight;
+  }
+
+  componentDidMount() {
+    this.scrollToBottom();
+  }
+
+  getSnapshotBeforeUpdate() {
+    const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+    return scrollHeight === scrollTop + clientHeight;
+  }
+
+  componentDidUpdate(pP, pS, atBottom) {
+    if (atBottom) {
+      this.scrollToBottom();
+    }
+  }
+
   render() {
     return this.props.children;
   }
@@ -36,10 +55,7 @@ class App extends Component {
             {messages.map((message, index) => (
               <FadeIn key={index}>
                 <li className="message">
-                  <div
-                    className="avatar"
-                    style={{ backgroundImage: `url(${message.avatar})` }}
-                  />
+                  <div className="avatar" style={{ backgroundImage: `url(${message.avatar})` }} />
                   <div className="text">{message.text}</div>
                 </li>
               </FadeIn>

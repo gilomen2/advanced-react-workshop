@@ -14,13 +14,15 @@
 //   beneath it to naturally compose both the UI and the state
 //   needed to render
 // - Make sure <GeoAddress> supports the user moving positions
-import "./index.css";
-import React from "react";
-import LoadingDots from "./LoadingDots";
-import Map from "./Map";
+import './index.css';
+import React from 'react';
+import LoadingDots from './LoadingDots';
+import Map from './Map';
 //import getAddressFromCoords from './getAddressFromCoords'
 
-class App extends React.Component {
+class GeoAddress extends React.Component {}
+
+class GeoPosition extends React.Component {
   state = {
     coords: null,
     error: null
@@ -47,20 +49,25 @@ class App extends React.Component {
   }
 
   render() {
+    return this.props.render(this.state);
+  }
+}
+
+class App extends React.Component {
+  render() {
     return (
-      <div className="app">
-        {this.state.error ? (
-          <div>Error: {this.state.error.message}</div>
-        ) : this.state.coords ? (
-          <Map
-            lat={this.state.coords.lat}
-            lng={this.state.coords.lng}
-            info="You are here"
-          />
-        ) : (
-          <LoadingDots />
-        )}
-      </div>
+      <GeoPosition
+        render={state => (
+          <div className="app">
+            {state.error ? (
+              <div>Error: {state.error.message}</div>
+            ) : state.coords ? (
+              <Map lat={state.coords.lat} lng={state.coords.lng} info="You are here" />
+            ) : (
+              <LoadingDots />
+            )}
+          </div>
+        )} />
     );
   }
 }
